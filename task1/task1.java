@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.io.File;
 import java.util.Scanner;
 
+
+
+
 public class task1 {
 
     public static void main(String[] argc) {
