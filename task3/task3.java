@@ -3,6 +3,10 @@ import java.io.File;
 
 public class task3 {
     public static void main(String[] argc) {
+        if (argc.length != 1) {
+            System.out.println("Usage: java task3.java <nameOfDirectory>");
+            return;
+        }
         String pathOfDirectory = argc[0];
         Scanner scanCashOne;
         Scanner scanCashTwo;

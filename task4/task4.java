@@ -3,6 +3,10 @@ import java.util.*;
 
 public class task4 {
     public static void main(String[] argc) {
+        if (argc.length == 0) {
+            System.out.println("Usage: java4.task <nameOfFile>");
+            return;
+        }
         String path = argc[0];
         Scanner sc;
         try {

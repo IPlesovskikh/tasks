@@ -4,6 +4,10 @@ import java.util.Scanner;
 
 public class task2 {
     public static void main(String[] argc) {
+        if (argc.length != 2) {
+            System.out.println("Usage: java task2.java <nameOfFileWithPolygon> <nameOfFileWithPoints>");
+            return;
+        }
         String pathOfPolygon = argc[0];
         String pathOfPoints = argc[1];
         File filePolygon = new File(pathOfPolygon);

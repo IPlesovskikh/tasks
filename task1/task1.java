@@ -7,6 +7,10 @@ import java.util.Scanner;
 public class task1 {
 
     public static void main(String[] argc) {
+        if (argc.length != 1) {
+            System.out.println("Usage: java task1.java <nameOfFile>");
+            return;
+        }
         String path = argc[0];
         ArrayList<Short> array = new ArrayList<>(1000);
         File file = new File(path);
