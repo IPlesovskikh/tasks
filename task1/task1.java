@@ -4,6 +4,13 @@ import java.util.Scanner;
 
 
 
+//изменить на linkedlist ?
+
+import java.util.ArrayList;
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Scanner;
 
 public class task1 {
 
@@ -11,29 +18,43 @@ public class task1 {
         String path = argc[0];
         ArrayList<Short> array = new ArrayList<>(1000);
         File file = new File(path);
-        Scanner sc = new Scanner(file); //exception поставить
+        Scanner sc = null;
+        try {
+            sc = new Scanner(file);
+        }
+        catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+        //exception поставить
         while(sc.hasNextShort()) {
             array.add(sc.nextShort());
         }
         double percentile;
         double median;
-        Double max = -32768.00; // запятая надо ?
-        Double min = 32767.00;
+        Double max = 0.0;
+        Double min = 0.0;
         double average;
 
+        Collections.sort(array);
         percentile = getPercentile(array);
         median = getMedian(array);
-        getMinMax(array, min, max);
+        min = (double)array.get(0);
+        max = (double)array.get(array.size() - 1);
         average = getAverage(array);
         System.out.printf("%.2f", percentile);
+        System.out.println();
         System.out.printf("%.2f", median);
+        System.out.println();
         System.out.printf("%.2f", max);
+        System.out.println();
         System.out.printf("%.2f", min);
+        System.out.println();
         System.out.printf("%.2f", average);
+        System.out.println();
     }
 
     static private double getPercentile(ArrayList<Short> array) {
-        double x = 0.9 * array.size();
+        double x = 0.9 * (array.size() - 1) + 1;
         int i = 0;
         for(; i < array.size(); i++) {
             if (x > array.get(i)) {
@@ -49,22 +70,11 @@ public class task1 {
         return array.get(array.size() / 2);
     }
 
-    private static void getMinMax(ArrayList<Short> array, Double min, Double max) {
-        for(short num: array) {
-            if (num > max) {
-                max = (double)num;
-            }
-            else if(num < min) {
-                min = (double)num;
-            }
-        }
-    }
-
     static private double getAverage(ArrayList<Short> array){
-        int sum = 0;
+        double sum = 0;
         for(short num: array) {
             sum += num;
         }
-        return (double)(sum / array.size());
+        return (double)(sum / (double)array.size());
     }
 }

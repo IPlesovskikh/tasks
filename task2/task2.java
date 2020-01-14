@@ -10,11 +10,18 @@ public class task2 {
         String pathOfPoints = argc[1];
         File fileRect = new File(pathOfRectangle);
         File filePoints = new File(pathOfPoints);
-        Scanner scRect = new Scanner(fileRect); //exception поставить
-        Scanner scPoints = new Scanner(filePoints);
+        Scanner scRect = null;
+        Scanner scPoints = null;
+        try {
+            scRect = new Scanner(fileRect);
+            scPoints = new Scanner(filePoints);
+        }
+        catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
         float[] rect = new float[8];
         getCoordinatesOfRectangle(rect, scRect);
-        ArrayList<Float> points = new ArrayList<>(8);
+        ArrayList<Float> points = new ArrayList<>();
         getCoordinatesOfPoints(points, scPoints);
         float x = 0;
         float y = 0;
@@ -22,13 +29,13 @@ public class task2 {
             y = points.get(k);
             x = points.get(k + 1);
             if (checkInRect(x, y, rect) == 1) {
-                break ;
+                continue ;
             }
             if (checkOnAngle(x, y, rect) == 1) {
-                break ;
+                continue ;
             }
             if (checkOnSide(x, y, rect) == 1) {
-                break ;
+                continue ;
             }
             System.out.println(3);
         }
@@ -82,14 +89,14 @@ public class task2 {
 
     static private void getCoordinatesOfRectangle(float[] rect, Scanner sc) {
         int i = 0;
-        while(sc.hasNextFloat() && i < 8) {
-            rect[i] = sc.nextFloat();
+        while(sc.hasNext() && i < 8) {
+            rect[i] = Float.valueOf(sc.next());
             i++;
         }
     }
     static private void getCoordinatesOfPoints(ArrayList<Float> points, Scanner sc) {
-        while(sc.hasNextFloat()) {
-            points.add(sc.nextFloat());
+        while(sc.hasNext()) {
+            points.add(Float.valueOf(sc.next()));
         }
     }
 }
