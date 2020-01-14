@@ -1,15 +1,7 @@
 import java.util.ArrayList;
 import java.io.File;
-import java.util.Scanner;
-
-
-
-//изменить на linkedlist ?
-
-import java.util.ArrayList;
-import java.io.File;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class task1 {
@@ -18,38 +10,42 @@ public class task1 {
         String path = argc[0];
         ArrayList<Short> array = new ArrayList<>(1000);
         File file = new File(path);
-        Scanner sc = null;
+        Scanner sc;
         try {
             sc = new Scanner(file);
         }
         catch (Exception e) {
             System.out.println("Error:" + e.getMessage());
+            return ;
         }
-        //exception поставить
         while(sc.hasNextShort()) {
             array.add(sc.nextShort());
         }
+        if (array.size() == 0) {
+            System.out.println("Error: File is empty or doesn't contain numbers [−32768, +32767]");
+            return ;
+        }
+        Collections.sort(array);
+
         double percentile;
         double median;
-        Double max = 0.0;
-        Double min = 0.0;
+        double max;
+        double min;
         double average;
-
-        Collections.sort(array);
         percentile = getPercentile(array);
         median = getMedian(array);
         min = (double)array.get(0);
         max = (double)array.get(array.size() - 1);
         average = getAverage(array);
-        System.out.printf("%.2f", percentile);
+        System.out.printf(Locale.US, "%.2f", percentile);
         System.out.println();
-        System.out.printf("%.2f", median);
+        System.out.printf(Locale.US,"%.2f", median);
         System.out.println();
-        System.out.printf("%.2f", max);
+        System.out.printf(Locale.US,"%.2f", max);
         System.out.println();
-        System.out.printf("%.2f", min);
+        System.out.printf(Locale.US,"%.2f", min);
         System.out.println();
-        System.out.printf("%.2f", average);
+        System.out.printf(Locale.US,"%.2f", average);
         System.out.println();
     }
 
@@ -75,6 +71,6 @@ public class task1 {
         for(short num: array) {
             sum += num;
         }
-        return (double)(sum / (double)array.size());
+        return sum / (double)array.size();
     }
 }

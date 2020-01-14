@@ -1,18 +1,16 @@
-//ArrayList change to List ?
-//проверка на невалидность ?
-
 import java.io.File;
 import java.util.*;
 
 public class task4 {
     public static void main(String[] argc) {
         String path = argc[0];
-        Scanner sc = null;
+        Scanner sc;
         try {
             sc = new Scanner(new File(path));
         }
         catch (Exception e) {
             System.out.println("Error:" + e.getMessage());
+            return ;
         }
         SortedMap<Integer, ArrayList<Boolean>> points = new TreeMap<>();
         getPoints(points, sc);
@@ -60,8 +58,13 @@ public class task4 {
         int size = temp.length();
         int colon = temp.indexOf(':');
         int time = 0;
-        time = Integer.parseInt(temp.substring(0, colon)) * 3600;
-        time += Integer.parseInt(temp.substring(colon + 1, size)) * 60;
+        try {
+            time = Integer.parseInt(temp.substring(0, colon)) * 3600;
+            time += Integer.parseInt(temp.substring(colon + 1, size)) * 60;
+        } catch(Exception e) {
+            System.out.println("Error: format of data in file is invalid");
+            System.exit(0);
+        }
         if(points.containsKey(time)) {
             points.get(time).add(isEnter);
         } else {
@@ -72,19 +75,19 @@ public class task4 {
     }
 
     static private void printIntervals(List<Integer> points) {
-        int hours = 0;
-        int minutes = 0;
-        String min = null;
-        for(int i = 0; i < points.size(); i = i + 2) {
+        int hours ;
+        int minutes;
+        String min;
+        for (int i = 0; i < points.size(); i = i + 2) {
             hours = points.get(i) / 3600;
             minutes = (points.get(i) / 60) % 60;
             min = Integer.toString(minutes);
-            min = min.length() == 1 ? "0" + min: min;
+            min = min.length() == 1 ? "0" + min : min;
             System.out.print(hours + ":" + min + " ");
             hours = points.get(i + 1) / 3600;
             minutes = (points.get(i + 1) / 60) % 60;
             min = Integer.toString(minutes);
-            min = min.length() == 1 ? "0" + min: min;
+            min = min.length() == 1 ? "0" + min : min;
             System.out.println(hours + ":" + min);
         }
     }

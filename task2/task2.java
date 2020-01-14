@@ -1,102 +1,110 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
-//комментарии сделать
-// сделать комментарий первый y второй x
 
 public class task2 {
     public static void main(String[] argc) {
-        String pathOfRectangle = argc[0];
+        String pathOfPolygon = argc[0];
         String pathOfPoints = argc[1];
-        File fileRect = new File(pathOfRectangle);
+        File filePolygon = new File(pathOfPolygon);
         File filePoints = new File(pathOfPoints);
-        Scanner scRect = null;
-        Scanner scPoints = null;
+        Scanner scRect;
+        Scanner scPoints;
         try {
-            scRect = new Scanner(fileRect);
+            scRect = new Scanner(filePolygon);
             scPoints = new Scanner(filePoints);
         }
         catch (Exception e) {
             System.out.println("Error:" + e.getMessage());
+            return ;
         }
-        float[] rect = new float[8];
-        getCoordinatesOfRectangle(rect, scRect);
+        float[] polygon = new float[8];
+        getCoordinatesOfRectangle(polygon, scRect);
         ArrayList<Float> points = new ArrayList<>();
         getCoordinatesOfPoints(points, scPoints);
-        float x = 0;
-        float y = 0;
+        float x;
+        float y;
+        int status;
         for(int k = 0; k < points.size(); k = k + 2){
             y = points.get(k);
             x = points.get(k + 1);
-            if (checkInRect(x, y, rect) == 1) {
+            if (checkOnAngle(x, y, polygon) == 1) {
+                System.out.println(0);
                 continue ;
             }
-            if (checkOnAngle(x, y, rect) == 1) {
-                continue ;
-            }
-            if (checkOnSide(x, y, rect) == 1) {
+            if ((status = checkInsidePolygon(x, y, polygon)) == 1 || status == 2) {
+                if(status == 1) {
+                    System.out.println(1);
+                } else {
+                    System.out.println(2);
+                }
                 continue ;
             }
             System.out.println(3);
         }
     }
 
-    static private int checkInRect(float x, float y, float[] rect) {
-        if (x > rect[1] && x < rect[3]) {
-            if (y > rect[0] && y < rect[6]) {
-                System.out.println(2);
-                return 1;
-            }
+    static private int checkInsidePolygon(float x, float y, float[] polygon) {
+
+        float firstSide = (polygon[0] - x) * (polygon[3] - polygon[1]) - (polygon[2] - polygon[0]) *  (polygon[1] - y);
+        float secondSide = (polygon[2] - x) * (polygon[7] - polygon[3]) - (polygon[6] - polygon[2] ) * (polygon[3] - y);
+        float thirdSide = (polygon[6] - x) * (polygon[1] - polygon[7]) - (polygon[0] - polygon[6]) *  (polygon[7] - y);
+        int status = checkInsideOrOnSide(firstSide, secondSide, thirdSide);
+        if (status != 0) {
+            return status;
         }
+        firstSide = (polygon[4] - x) * (polygon[7] - polygon[5]) - (polygon[6] - polygon[4]) *  (polygon[5] - y);
+        secondSide = (polygon[6] - x) * (polygon[3] - polygon[7]) - (polygon[2] - polygon[6] ) * (polygon[7] - y);
+        thirdSide = (polygon[2] - x) * (polygon[5] - polygon[3]) - (polygon[4] - polygon[2]) *  (polygon[3] - y);
+        status = checkInsideOrOnSide(firstSide, secondSide, thirdSide);
+        return status;
+    }
+
+    static private int checkInsideOrOnSide(float firstSide, float secondSide, float thirdSide) {
+        if ((firstSide > 0 && secondSide > 0 && thirdSide > 0) || (firstSide < 0 && secondSide < 0 && thirdSide < 0))
+            return 2;
+        if ((firstSide == 0 && secondSide > 0 && thirdSide > 0) || (firstSide == 0 && secondSide < 0 && thirdSide < 0))
+            return 1;
+        if ((firstSide > 0 && secondSide > 0 && thirdSide == 0) || (firstSide < 0 && secondSide < 0 && thirdSide == 0))
+            return 1;
         return 0;
     }
 
-    static private int checkOnAngle(float x, float y, float[] rect) {
+    static private int checkOnAngle(float x, float y, float[] polygon) {
         boolean angle = false;
-        if(y == rect[0] && x == rect[1]) {
+        if(x == polygon[0] && y == polygon[1]) {
             angle = true;
-        } else if (y == rect[2] && x == rect[3]) {
+        } else if (x == polygon[2] && y == polygon[3]) {
             angle = true;
-        } else if (y == rect[4] && x == rect[5]) {
+        } else if (x == polygon[4] && y == polygon[5]) {
             angle = true;
-        } else if (y == rect[6] && x == rect[7]) {
+        } else if (x == polygon[6] && y == polygon[7]) {
             angle = true;
         }
         if (angle) {
-            System.out.println(0);
             return 1;
         }
         return 0;
     }
 
-    static private int checkOnSide(float x, float y, float[] rect) {
-        boolean side = false;
-        if(y == rect[0] && x > rect[1] && x < rect[3]) {
-            side = true;
-        } else if (x == rect[3] && rect[2] < y && y < rect[4]) {
-            side = true;
-        } else if (y == rect[6] && rect[7] < x && x < rect[5]) {
-            side = true;
-        } else if (x == rect[1] && rect[0] < y && y < rect[6]) {
-            side = true;
-        }
-        if (side) {
-            System.out.println(1);
-            return 1;
-        }
-        return 0;
-    }
-
-    static private void getCoordinatesOfRectangle(float[] rect, Scanner sc) {
+    static private void getCoordinatesOfRectangle(float[] polygon, Scanner sc) {
         int i = 0;
         while(sc.hasNext() && i < 8) {
-            rect[i] = Float.valueOf(sc.next());
+            polygon[i] = Float.valueOf(sc.next());
             i++;
+        }
+        if (i != 8) {
+            System.out.println("Error: File1 must contain four coordinates(x, y) of rectangle");
+            System.exit(0);
         }
     }
     static private void getCoordinatesOfPoints(ArrayList<Float> points, Scanner sc) {
         while(sc.hasNext()) {
             points.add(Float.valueOf(sc.next()));
+        }
+        if (points.size() % 2 != 0) {
+            System.out.println("Error: File2 must contain coordinates(x, y) for each point/ incomplete data");
+            System.exit(0);
         }
     }
 }
